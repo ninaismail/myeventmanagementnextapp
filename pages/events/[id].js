@@ -1,23 +1,20 @@
-import { Fragment } from 'react';
-import { useRouter } from 'next/router';
 
-import { getEventById } from '../../dummy-data';
+import { Fragment } from 'react';
+
+import { getEventById, getFeaturedEvents } from '../../helpers/api-util';
 import EventSummary from '../../components/event-details/event-summary';
 import EventLogistics from '../../components/event-details/event-logistics';
 import EventContent from '../../components/event-details/event-content';
 import ErrorAlert from '../../components/ui/error-alert';
 
-function EventDetailPage() {
-  const router = useRouter();
-//get the current route
-  const eventId = router.query.id;
-  const event = getEventById(eventId);
+function EventDetailPage(props) {
+  const event = props.selectedEvent;
 
   if (!event) {
     return (
-      <ErrorAlert>
-        <p>No event found!</p>
-      </ErrorAlert>
+      <div className="center">
+        <p>Loading...</p>
+      </div>
     );
   }
 
@@ -35,6 +32,31 @@ function EventDetailPage() {
       </EventContent>
     </Fragment>
   );
+}
+
+export async function getStaticProps(context) {
+  const eventId = context.params.id;
+
+  const event = await getEventById(eventId);
+
+  return {
+    props: {
+      selectedEvent: event
+    },
+    revalidate: 30
+  };
+}
+
+export async function getStaticPaths() {
+  const events = await getFeaturedEvents();
+  const ids = events.map((event) => event.id);
+  //the file name is id and the data feild for id is id
+  const pathsWithParams = ids.map((id) => ({ params: { id: id } }));
+
+  return {
+    paths: pathsWithParams,
+    fallback: 'blocking'
+  };
 }
 
 export default EventDetailPage;

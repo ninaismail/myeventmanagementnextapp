@@ -9,19 +9,19 @@ import ErrorAlert from '../../components/ui/error-alert';
 
 function FilteredEventsPage() {
   const router = useRouter();
-
+//when the page is first rendered we don't have the slug value (we don't have access to the url data yet)
   const filterData = router.query.slug;
 
   if (!filterData) {
     return <p className='center'>Loading...</p>;
   }
-
+//the second time it's rendered, we have access to the url data
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
 
   const numYear = +filteredYear;
   const numMonth = +filteredMonth;
-
+//if we don't have a valid year and vaid month
   if (
     isNaN(numYear) ||
     isNaN(numMonth) ||
@@ -41,12 +41,13 @@ function FilteredEventsPage() {
       </Fragment>
     );
   }
-
+//if we do have a valid year and valid month
   const filteredEvents = getFilteredEvents({
     year: numYear,
     month: numMonth,
   });
-
+//we check if fitered events is an empty array,
+//so we have a valid filter but we don't find an event for the chosen filter
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
@@ -59,7 +60,7 @@ function FilteredEventsPage() {
       </Fragment>
     );
   }
-
+//now we know that we have valid events
   const date = new Date(numYear, numMonth - 1);
 
   return (
