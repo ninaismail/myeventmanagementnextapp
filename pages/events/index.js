@@ -1,20 +1,17 @@
 import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 
-import { getAllEvents } from '../../dummy-data';
+import { getAllEvents } from '../../helpers/api-util';
 import EventList from '../../components/events/events-list';
 import EventsSearch from '../../components/events/events-search';
 
-function AllEventsPage() {
+function AllEventsPage(props) {
   const router = useRouter();
-  const events = getAllEvents();
-  //we need a function to call the onSearch function/prop
-  //this function takes the same 2 parameters 
-  //and returns the path to be executed when the form is submitted 
-  //and we extracted our input/selected values
+  const { events } = props;
+  console.log({events})
   function findEventsHandler(year, month) {
     const fullPath = `/events/${year}/${month}`;
-    //go to a diffrent page
+
     router.push(fullPath);
   }
 
@@ -24,6 +21,17 @@ function AllEventsPage() {
       <EventList items={events} />
     </Fragment>
   );
+}
+
+export async function getStaticProps() {
+  const events = await getAllEvents();
+  
+  return {
+    props: {
+      events: events,
+    },
+    revalidate: 60
+  };
 }
 
 export default AllEventsPage;
