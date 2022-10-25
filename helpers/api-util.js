@@ -10,6 +10,8 @@ export async function getAllEvents() {
         ...data[key]
       });
     }
+    console.log({events})
+
     return events;
   }
   
@@ -32,6 +34,6 @@ export async function getAllEvents() {
       const eventDate = new Date(event.date);
       return eventDate.getFullYear() === year && eventDate.getMonth() === month - 1;
     });
-  
+    console.log({filteredEvents})
     return filteredEvents;
   }

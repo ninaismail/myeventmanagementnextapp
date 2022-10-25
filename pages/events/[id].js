@@ -50,7 +50,7 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
   const events = await getFeaturedEvents();
   const ids = events.map((event) => event.id);
-  //the file name is id and the data field for id is id
+  //the file name is id and the data feild for id is id
   const pathsWithParams = ids.map((id) => ({ params: { id: id } }));
 
   return {
